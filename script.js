@@ -4,6 +4,7 @@ let moodRatings = [];
 const entriesList = [];
 let isBreakTime = false; // Pour gérer la transition entre travail et pause
 let timeRemaining = 2; // Durée initiale pour les tests (25 minutes pour production)
+//let timeRemaining = 25 * 60; 
 
 // Éléments DOM
 const timerDisplay = document.querySelector('#timer');
@@ -55,7 +56,8 @@ function startBreakTimer() {
 
 function resetWorkTimer() {
     isBreakTime = false;
-    timeRemaining = 25 * 60; // 25 minutes
+    //timeRemaining = 25 * 60; // 25 minutes
+    timeRemaining = 2; 
     updateTimerDisplay();
     resetButtons();
 }
