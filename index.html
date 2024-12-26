@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker de Productivité</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+
+        <div class="timer-section">
+            <h1>Tracker de Productivité</  h1>
+            <div class="timer" id="timer">25:00</div>
+            <div class="buttons">
+                <button id="start">Commencer</button>
+                <button id="pause" disabled>Pause</button>
+                <button id="cancel" disabled>Annuler</button>
+            </div>
+        </div>
+
+        <div class="journal-section">
+            <div id="journal">
+                <h2>Journal de travail</h2>
+                <label for="filter">Filtrer par tag :</label>
+                <select id="filter">
+                    <option value="all">Tous</option>
+                </select>
+                <div id="entries"></div>
+            </div>
+        </div>
+        <p class="mood-average">Humeur Moyenne : <span id="moodAverage">0</span>/10<span>&#9733;</span></p>
+        <div class="popup" id="popup" style="display: none;">
+            <div class="popup-content">
+                <h2>Sommaire de Session</h2>
+                <label for="description">Description :</label>
+                <textarea id="description" rows="4" placeholder="Descrivez vos progrès..."></textarea>
+
+                <label for="mood">Notez votre humeur :</label>
+                <div class="star-rating">
+                    <input type="radio" id="star10" name="mood" value="10"><label for="star10" title="10 stars">&#9733;</label>
+                    <input type="radio" id="star9" name="mood" value="9"><label for="star9" title="9 stars">&#9733;</label>
+                    <input type="radio" id="star8" name="mood" value="8"><label for="star8" title="8 stars">&#9733;</label>
+                    <input type="radio" id="star7" name="mood" value="7"><label for="star7" title="7 stars">&#9733;</label>
+                    <input type="radio" id="star6" name="mood" value="6"><label for="star6" title="6 star">&#9733;</label>
+                    <input type="radio" id="star5" name="mood" value="5"><label for="star5" title="5 stars">&#9733;</label>
+                    <input type="radio" id="star4" name="mood" value="4"><label for="star4" title="4 stars">&#9733;</label>
+                    <input type="radio" id="star3" name="mood" value="3"><label for="star3" title="3 stars">&#9733;</label>
+                    <input type="radio" id="star2" name="mood" value="2"><label for="star2" title="2 stars">&#9733;</label>
+                    <input type="radio" id="star1" name="mood" value="1"><label for="star1" title="1 star">&#9733;</label>
+                </div>
+
+                <label for="tag">Tag :</label>
+                <input type="text" id="tag" placeholder="e.g. administratif, design, emails, programmation, etc..">
+
+                <div class="popup-buttons">
+                    <button id="save">Sauvegarder</button>
+                    <button id="cancel-popup">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
