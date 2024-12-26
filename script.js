@@ -1,10 +1,11 @@
 let timer;
-//let timeRemaining = 25 * 60; // 25 minutes
-let timeRemaining = 2; // 25 minutes
 let isPaused = false;
 let moodRatings = [];
-const entriesList = []; // Pour stocker les entrées avec tag, description et humeur
+const entriesList = [];
+let isBreakTime = false; // Pour gérer la transition entre travail et pause
+let timeRemaining = 2; // Durée initiale pour les tests (25 minutes pour production)
 
+// Éléments DOM
 const timerDisplay = document.querySelector('#timer');
 const startButton = document.querySelector('#start');
 const pauseButton = document.querySelector('#pause');
@@ -15,7 +16,7 @@ const cancelPopupButton = document.querySelector('#cancel-popup');
 const journalEntries = document.querySelector('#entries');
 const descriptionInput = document.querySelector('#description');
 const tagInput = document.querySelector('#tag');
-const moodInputs = document.querySelector('.mood');
+const moodInputs = document.querySelectorAll('[name="mood"]');
 const moodAverageSpan = document.querySelector("#moodAverage");
 const filterSelect = document.querySelector("#filter");
 
@@ -32,13 +33,31 @@ function startTimer() {
             updateTimerDisplay();
             if (timeRemaining === 0) {
                 clearInterval(timer);
-                showPopup();
+                if (!isBreakTime) {
+                    showPopup();
+                } else {
+                    resetWorkTimer(); // Retour au travail après la pause
+                }
             }
         }
     }, 1000);
     startButton.disabled = true;
     pauseButton.disabled = false;
     cancelButton.disabled = false;
+}
+
+function startBreakTimer() {
+    isBreakTime = true;
+    timeRemaining = 5 * 60; // 5 minutes
+    updateTimerDisplay();
+    startTimer();
+}
+
+function resetWorkTimer() {
+    isBreakTime = false;
+    timeRemaining = 25 * 60; // 25 minutes
+    updateTimerDisplay();
+    resetButtons();
 }
 
 function pauseTimer() {
@@ -48,13 +67,10 @@ function pauseTimer() {
 
 function cancelTimer() {
     clearInterval(timer);
-    resetTimer();
+    resetWorkTimer();
 }
 
-function resetTimer() {
-    //timeRemaining = 25 * 60; // Reset to 25 minutes
-    timeRemaining = 2; // Reset to 25 minutes
-    updateTimerDisplay();
+function resetButtons() {
     startButton.disabled = false;
     pauseButton.disabled = true;
     cancelButton.disabled = true;
@@ -68,17 +84,21 @@ function showPopup() {
 
 function hidePopup() {
     popup.style.display = 'none';
+    startBreakTimer(); // Démarrer le timer de pause après avoir fermé la popup
 }
 
 function calculateMoodAverage() {
+    if (moodRatings.length === 0) {
+        moodAverageSpan.textContent = "0";
+        return;
+    }
     const moodAverage = (moodRatings.reduce((sum, rating) => sum + rating, 0) / moodRatings.length).toFixed(1);
     moodAverageSpan.textContent = moodAverage;
 }
 
 function updateFilterOptions() {
-    // Supprime les doublons dans le filtre
     const uniqueTags = [...new Set(entriesList.map(entry => entry.tag))];
-    filterSelect.innerHTML = '<option value="all">Tous</option>'; // Réinitialise
+    filterSelect.innerHTML = '<option value="all">Tous</option>';
     uniqueTags.forEach(tag => {
         const option = document.createElement("option");
         option.value = tag;
@@ -89,7 +109,7 @@ function updateFilterOptions() {
 
 function renderFilteredEntries() {
     const selectedTag = filterSelect.value;
-    journalEntries.innerHTML = ""; // Réinitialise les entrées visibles
+    journalEntries.innerHTML = "";
 
     const filteredEntries = selectedTag === "all"
         ? entriesList
@@ -121,22 +141,17 @@ function saveEntry() {
     entriesList.push(newEntry);
     moodRatings.push(Number(mood));
 
-    // Met à jour la moyenne et les options du filtre
     calculateMoodAverage();
     updateFilterOptions();
     renderFilteredEntries();
 
-    // Réinitialise le formulaire
     descriptionInput.value = '';
     tagInput.value = '';
     moodInputs.forEach(input => (input.checked = false));
     hidePopup();
-    resetTimer();
 }
 
-// Écouteur pour le filtre
 filterSelect.addEventListener("change", renderFilteredEntries);
-
 startButton.addEventListener('click', startTimer);
 pauseButton.addEventListener('click', pauseTimer);
 cancelButton.addEventListener('click', cancelTimer);
